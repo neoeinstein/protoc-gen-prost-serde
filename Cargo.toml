@@ -1,6 +1,6 @@
 [package]
 name = "protoc-gen-prost-serde"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Marcus Griep <marcus@griep.us>"]
 description = "Coming soon…"
 license = "Apache-2.0"
