@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 use once_cell::sync::Lazy;
 use std::{fmt, str};
 
@@ -5,7 +7,7 @@ pub mod generator;
 
 /// Parameters use to configure [`Generator`]s built into `protoc-gen-prost-serde`
 ///
-/// [`Generator`]: crate::generators::Generator
+/// [`Generator`]: protoc_gen_prost::generators::Generator
 #[derive(Debug, Default)]
 pub struct Parameters {
     default_package_filename: Option<String>,
