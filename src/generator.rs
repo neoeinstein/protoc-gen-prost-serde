@@ -1,7 +1,6 @@
 use prost_build::Module;
 use prost_types::compiler::code_generator_response::File;
-use protoc_gen_prost::generators::{Generator, Result};
-use protoc_gen_prost::ModuleRequestSet;
+use protoc_gen_prost::{Generator, ModuleRequestSet, Result};
 
 pub struct PbJsonGenerator {
     builder: pbjson_build::Builder,

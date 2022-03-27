@@ -1,15 +1,41 @@
 #![doc = include_str!("../README.md")]
 
+use self::generator::PbJsonGenerator;
 use once_cell::sync::Lazy;
+use prost::Message;
+use prost_types::compiler::CodeGeneratorRequest;
+use protoc_gen_prost::{Generator, ModuleRequestSet};
 use std::{fmt, str};
 
-pub mod generator;
+mod generator;
+
+/// Execute the core _Prost!_ generator from a raw [`CodeGeneratorRequest`]
+pub fn execute(raw_request: &[u8]) -> protoc_gen_prost::Result {
+    let request = CodeGeneratorRequest::decode(raw_request)?;
+    let params = request.parameter().parse::<Parameters>()?;
+
+    let mut builder = params.to_pbjson_builder();
+    for file in &request.proto_file {
+        builder.register_file_descriptor(file.clone());
+    }
+
+    let module_request_set = ModuleRequestSet::new(
+        request.file_to_generate,
+        request.proto_file,
+        raw_request,
+        params.default_package_filename(),
+    )?;
+
+    let files = PbJsonGenerator::new(builder).generate(&module_request_set)?;
+
+    Ok(files)
+}
 
 /// Parameters use to configure [`Generator`]s built into `protoc-gen-prost-serde`
 ///
 /// [`Generator`]: protoc_gen_prost::generators::Generator
 #[derive(Debug, Default)]
-pub struct Parameters {
+struct Parameters {
     default_package_filename: Option<String>,
     extern_path: Vec<(String, String)>,
     retain_enum_prefix: bool,
@@ -23,7 +49,7 @@ static PARAMETER: Lazy<regex::Regex> = Lazy::new(|| {
 });
 
 impl Parameters {
-    pub fn to_pbjson_builder(&self) -> pbjson_build::Builder {
+    fn to_pbjson_builder(&self) -> pbjson_build::Builder {
         let mut builder = pbjson_build::Builder::new();
 
         for (proto_path, rust_path) in &self.extern_path {
@@ -37,7 +63,7 @@ impl Parameters {
         builder
     }
 
-    pub fn default_package_filename(&self) -> &str {
+    fn default_package_filename(&self) -> &str {
         self.default_package_filename.as_deref().unwrap_or("_")
     }
 }
@@ -81,7 +107,7 @@ impl str::FromStr for Parameters {
 
 /// An invalid parameter
 #[derive(Debug)]
-pub struct InvalidParameter(String);
+struct InvalidParameter(String);
 
 impl fmt::Display for InvalidParameter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
