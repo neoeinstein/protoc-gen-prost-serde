@@ -1,6 +1,6 @@
 use prost_build::Module;
 use prost_types::compiler::code_generator_response::File;
-use protoc_gen_prost::generators::Generator;
+use protoc_gen_prost::generators::{Generator, Result};
 use protoc_gen_prost::ModuleRequestSet;
 
 pub struct PbJsonGenerator {
@@ -9,10 +9,7 @@ pub struct PbJsonGenerator {
 }
 
 impl Generator for PbJsonGenerator {
-    fn generate(
-        &mut self,
-        module_request_set: &ModuleRequestSet,
-    ) -> protoc_gen_prost::generators::Result {
+    fn generate(&mut self, module_request_set: &ModuleRequestSet) -> Result {
         let results = self.builder.generate(&self.prefixes, |_| Ok(Vec::new()))?;
 
         results
