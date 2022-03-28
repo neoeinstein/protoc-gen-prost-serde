@@ -208,7 +208,7 @@ dependencies = [
 [[package]]
 name = "protoc-gen-prost"
 version = "0.1.1"
-source = "git+https://github.com/neoeinstein/protoc-gen-prost?branch=main#d9c401758a5f55d4cc498175eee31008b91d6ef9"
+source = "git+https://github.com/neoeinstein/protoc-gen-prost?branch=main#ffbf57b4170f5cfd53c8246440d40dcdc5e35604"
 dependencies = [
  "once_cell",
  "prost",
