@@ -23,7 +23,7 @@ pub fn execute(raw_request: &[u8]) -> protoc_gen_prost::Result {
         request.file_to_generate,
         request.proto_file,
         raw_request,
-        params.default_package_filename(),
+        params.default_package_filename.as_deref(),
     )?;
 
     let files = PbJsonGenerator::new(builder).generate(&module_request_set)?;
@@ -61,10 +61,6 @@ impl Parameters {
         }
 
         builder
-    }
-
-    fn default_package_filename(&self) -> &str {
-        self.default_package_filename.as_deref().unwrap_or("_")
     }
 }
 
